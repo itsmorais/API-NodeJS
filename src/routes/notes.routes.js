@@ -1,5 +1,6 @@
 const { Router } = require('express')
 const NotesController = require('../controllers/NotesController')
+const ensureAuth = require('../middlewares/ensureAuth')
 const notesRoutes = Router()
 
 function myMiddleware(req, res, next) {
@@ -8,9 +9,11 @@ function myMiddleware(req, res, next) {
 }
 
 const notesController = new NotesController()
-notesRoutes.get('/', myMiddleware, notesController.index)
-notesRoutes.post('/:user_id', myMiddleware, notesController.create)
-notesRoutes.get('/:id', myMiddleware, notesController.show)
-notesRoutes.delete('/:id', myMiddleware, notesController.delete)
+// Middleware aplicado a todas as rotas
+notesRoutes.use(ensureAuth)
+notesRoutes.get('/', notesController.index)
+notesRoutes.post('/', notesController.create)
+notesRoutes.get('/:id', notesController.show)
+notesRoutes.delete('/:id', notesController.delete)
 
 module.exports = notesRoutes

@@ -9,9 +9,13 @@ const app = express()
 // Defininando o TIPO DE DADO que será recebido
 app.use(express.json())
 
+const uploadConfig = require('./configs/upload')
+
 const AppError = require('./utils/AppError')
 const routes = require('./routes')
 const { response } = require('express')
+
+app.use('/files', express.static(uploadConfig.UPLOADS_FOLDER))
 
 // Params são obrigatórios passar na requisição
 app.get('/message/:id/:user', (req, res) => {
