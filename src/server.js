@@ -1,3 +1,5 @@
+// DOTenv
+require('dotenv/config')
 // Importanto biblioteca expressa responsável pelo tratamento de erros
 require('express-async-errors')
 // Importanto express
@@ -8,13 +10,16 @@ const migrationsRun = require('./database/sqlite/migrations')
 const app = express()
 // Defininando o TIPO DE DADO que será recebido
 app.use(express.json())
+const cors = require('cors')
 
 const uploadConfig = require('./configs/upload')
 
 const AppError = require('./utils/AppError')
 const routes = require('./routes')
+app.use(cors())
 const { response } = require('express')
 
+// Mostrar foto
 app.use('/files', express.static(uploadConfig.UPLOADS_FOLDER))
 
 // Params são obrigatórios passar na requisição
@@ -59,5 +64,5 @@ app.use((error, request, response, next) => {
 migrationsRun()
 
 // Localhost PORT
-const PORT = 3333
+const PORT = process.env.PORT || 3333
 app.listen(PORT, () => console.log(`Server is running on Port ${PORT}`))

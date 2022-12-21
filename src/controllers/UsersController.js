@@ -12,7 +12,7 @@ class UsersController {
   // 1 função - DELETE para remover um registro
   async create(req, res) {
     // inicializa variaveis
-    const { nome, email, password } = req.body
+    const { name, email, password } = req.body
 
     const database = await sqliteConnection()
     const checkUserExist = await database.get(
@@ -28,13 +28,13 @@ class UsersController {
     // Executando comando SQLITE para INSERIR novo usuário
     await database.run(
       'INSERT INTO users (name,email,password) VALUES (?,?,?)',
-      [nome, email, hashedPassowd]
+      [name, email, hashedPassowd]
     )
     return res.status(201).json()
   }
 
   async update(req, res) {
-    const { nome, email, password, old_password } = req.body
+    const { name, email, password, old_password } = req.body
     const user_id = req.user.id
 
     const database = await sqliteConnection()
@@ -50,11 +50,11 @@ class UsersController {
       [email]
     )
 
-    if (userWithUpdatedEmail && userWithUpdatedEmail.id !== user.id) {
+    if (userWithUpdatedEmail && userWithUpdatedEmail.id !== user_id) {
       throw new AppError('Este e-mail já está em uso!')
     }
-    // se nome for undefined -> passe a usar user.name
-    user.name = nome ?? user.name
+    // se name for undefined -> passe a usar user.name
+    user.name = name ?? user.name
     user.email = email ?? user.email
 
     if (password && !old_password) {
